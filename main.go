@@ -52,7 +52,8 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			}
 		}
 	}()
-
+	// TODO: add CORS - leave open
+	// w.Header().Add()
 	fmt.Fprintf(w, "Hello Ably, %s!\n", ps.ByName("name"))
 }
 
