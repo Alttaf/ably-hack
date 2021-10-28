@@ -37,8 +37,8 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	channel := ablyClient.Channels.Get("test")
 
 	/* Publish a message to the test channel */
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
+	ctx, _ := context.WithTimeout(context.Background(), 120*time.Second)
+
 	go func() {
 		for i := 0; i < 5; i++ {
 			time.Sleep(5 * time.Second)
