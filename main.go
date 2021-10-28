@@ -30,6 +30,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	ablyClient, err := ably.NewRealtime(ably.WithKey("J0HbFg.02ttpg:pJoo1J-jZV2Hym28kvuNKQwopg66c9bB9SIXDUhAMFw"))
 	if err != nil {
 		fmt.Println("Dying could not create client")
@@ -42,7 +43,7 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	go func() {
 		for i := 0; i < 5; i++ {
-			time.Sleep(5 * time.Second)
+			time.Sleep(20 * time.Second)
 			data, err := callTwitter("lakers")
 			if err != nil {
 				fmt.Println("could not get twitter data")
@@ -56,6 +57,7 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}()
 	// TODO: add CORS - leave open
 	// w.Header().Add()
+
 	fmt.Fprintf(w, "Hello Ably, %s!\n", ps.ByName("name"))
 }
 
