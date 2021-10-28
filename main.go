@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/ably/ably-go/ably"
@@ -100,10 +101,10 @@ func callTwitter(query string) (string, error) {
 }
 
 func main() {
-	fmt.Printf("starting Server on port %d", 8080)
+	fmt.Printf("starting Server on port %s", ":"+os.Getenv("PORT"))
 
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.GET("/hello/:name", Hello)
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
 }
