@@ -36,6 +36,7 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		fmt.Println("Dying could not create client")
 		return
 	}
+	twitterQuery := ps.ByName("name")
 	channel := ablyClient.Channels.Get("test")
 
 	/* Publish a message to the test channel */
@@ -50,7 +51,7 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	go func() {
 		for i := 0; i < 5; i++ {
-			data, err := callTwitter("lakers")
+			data, err := callTwitter(twitterQuery)
 			if err != nil {
 				fmt.Println("could not get twitter data")
 			}
