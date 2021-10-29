@@ -1,4 +1,5 @@
-[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)](https://golang.org/)
+[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/alttaf/ably-hack.svg)](https://golang.org/)
+[![Report](https://goreportcard.com/badge/github.com/alttaf/ably-hack?style=flat&v=1)](https://goreportcard.com/report/github.com/alttaf/ably-hack)
 
 # Ably Hackathon Entry: Ably Text
 ```
@@ -20,7 +21,9 @@ This keyword was chosen for the demo since there due to the reliability of tweet
 
 The table automatically updates: a new entry will be added at the top with each new minute, with data from the last two hours being shown.
 
+This repo contains the backend code, see <https://github.com/Alttaf/ably-fe> for the frontend
 ![AblyTextScreenshot.png](AblyTextScreenshot.png)
+
 ### Inspiration
 
 ## Documentation Fixes
