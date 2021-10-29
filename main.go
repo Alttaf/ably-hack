@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/ably/ably-go/ably"
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -39,7 +40,14 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	channel := ablyClient.Channels.Get("test")
 
 	/* Publish a message to the test channel */
-	ctx, _ := context.WithTimeout(context.Background(), 120*time.Second)
+	ctx, cancelFunction := context.WithTimeout(context.Background(), 120*time.Second)
+
+	// defer canceling so that all the resources are freed up
+	// For this and the derived contexts
+	defer func() {
+		fmt.Println("Main Defer: canceling context")
+		cancelFunction()
+	}()
 
 	go func() {
 		for i := 0; i < 5; i++ {
@@ -55,7 +63,6 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			}
 		}
 	}()
-	// TODO: add CORS - leave open
 	// w.Header().Add()
 
 	fmt.Fprintf(w, "Hello Ably, %s!\n", ps.ByName("name"))
@@ -66,9 +73,9 @@ func callTwitter(query string) (string, error) {
 		Timeout: time.Second * 10,
 	}
 	now := time.Now()
-	backTwoHours := time.Hour * time.Duration(-2)
-	tenMinsAgo := now.Add(backTwoHours)
-	t := tenMinsAgo.Format("2006-01-02T15:04:05Z")
+	twoHours := time.Hour * time.Duration(-2)
+	twoHoursAgo := now.Add(twoHours)
+	t := twoHoursAgo.Format("2006-01-02T15:04:05Z")
 	req, err := http.NewRequest("GET", "https://api.twitter.com/2/tweets/counts/recent?query="+query+"&granularity=minute&start_time="+t, nil)
 	if err != nil {
 		_ = fmt.Errorf("got error %s", err.Error())
