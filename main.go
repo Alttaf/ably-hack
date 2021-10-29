@@ -12,15 +12,15 @@ import (
 	"ably-text/twitter"
 
 	"github.com/ably/ably-go/ably"
-	_ "github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/julienschmidt/httprouter"
 )
 
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func Index(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!\n")
 }
 
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func Hello(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	ablyAPIKey := env.RetrieveValue("ABLY_API_KEY")
 	if ablyAPIKey == "" {
