@@ -2,29 +2,18 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"ably-hack.git/env"
+	"ably-hack.git/twitter"
 	"github.com/ably/ably-go/ably"
 	_ "github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 )
-
-type TwitterData struct {
-	Data []struct {
-		End        time.Time `json:"end"`
-		Start      time.Time `json:"start"`
-		TweetCount int       `json:"tweet_count"`
-	} `json:"data"`
-	Meta struct {
-		TotalTweetCount int `json:"total_tweet_count"`
-	} `json:"meta"`
-}
 
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprint(w, "Welcome!\n")
@@ -32,7 +21,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	ablyAPIKey := retrieveEnvValue("ABLY_API_KEY")
+	ablyAPIKey := env.RetrieveValue("ABLY_API_KEY")
 	if ablyAPIKey == "" {
 		return
 	}
@@ -51,7 +40,7 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	go func() {
 		for i := 0; i < 5; i++ {
-			data, err := callTwitter(twitterQuery)
+			data, err := twitter.RetrieveTweets(twitterQuery)
 			if err != nil {
 				fmt.Println("could not get twitter data")
 			}
@@ -64,75 +53,6 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		}
 	}()
 	fmt.Fprintf(w, "Hello Ably, %s!\n", ps.ByName("name"))
-}
-
-func retrieveEnvValue(envKey string) string {
-	envValue, present := os.LookupEnv(envKey)
-	if !present {
-		errorString := fmt.Errorf("%v unset. This must be set from an .env file", envKey)
-		fmt.Println(errorString)
-		return ""
-	}
-
-	return envValue
-}
-
-// TODO: move to subpackage
-func callTwitter(query string) (string, error) {
-	client := &http.Client{
-		Timeout: time.Second * 10,
-	}
-	now := time.Now()
-	twoHours := time.Hour * time.Duration(-2)
-	twoHoursAgo := now.Add(twoHours)
-	t := twoHoursAgo.Format("2006-01-02T15:04:05Z")
-	req, err := http.NewRequest("GET", "https://api.twitter.com/2/tweets/counts/recent?query="+query+"&granularity=minute&start_time="+t, nil)
-	if err != nil {
-		_ = fmt.Errorf("got error %s", err.Error())
-		fmt.Println("Dying on making request")
-		return "", nil
-	}
-
-	twitBearerToken := retrieveEnvValue("TWITTER_BEARER_TOKEN")
-	if twitBearerToken == "" {
-		return "", nil
-	}
-
-	twitPersonalisationId := retrieveEnvValue("TWITTER_PERSONALISATION_ID")
-	if twitPersonalisationId == "" {
-		return "", nil
-	}
-	twitGuestId := retrieveEnvValue("TWITTER_GUEST_ID")
-	if twitGuestId == "" {
-		return "", nil
-	}
-
-	req.Header.Add("Authorization", "Bearer "+twitBearerToken)
-	cookieHeaderValue := fmt.Sprintf("personalization_id=\"%v\"; guest_id=%v", twitPersonalisationId, twitGuestId)
-
-	req.Header.Add("Cookie", cookieHeaderValue)
-
-	res, err := client.Do(req)
-	if err != nil {
-		_ = fmt.Errorf("got error %s", err.Error())
-		fmt.Println("Dying on request")
-		return "", nil
-	}
-	defer res.Body.Close()
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
-		return "", nil
-	}
-	var tw TwitterData
-	err = json.Unmarshal(body, &tw)
-	if err != nil {
-		log.Fatal("could not unmarshall")
-	}
-	fmt.Println("getting data from twitter")
-
-	return string(body), nil
 }
 
 func main() {
