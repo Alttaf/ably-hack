@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/ably/ably-go/ably"
+	_ "github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -41,13 +42,7 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	/* Publish a message to the test channel */
 	ctx, _ := context.WithTimeout(context.Background(), 120*time.Second)
-
-	// defer canceling so that all the resources are freed up
-	// For this and the derived contexts
-	defer func() {
-		//fmt.Println("Main Defer: canceling context")
-		//cancelFunction()
-	}()
+	// TODO: the cancel function returned by context.WithTimeout should be called, not discarded, to avoid a context leak
 
 	go func() {
 		for i := 0; i < 5; i++ {
@@ -105,13 +100,13 @@ func callTwitter(query string) (string, error) {
 		log.Fatal("could not unmarshall")
 	}
 	fmt.Println("getting data from twitter")
-	//fmt.Printf("data : %v", tw.Data)
+	// fmt.Printf("data : %v", tw.Data)
 
 	return string(body), nil
 }
 
 func main() {
-	//os.Setenv("PORT", "8080")
+	// os.Setenv("PORT", "8080")
 	fmt.Printf("starting Server on port %s", ":"+os.Getenv("PORT"))
 
 	router := httprouter.New()

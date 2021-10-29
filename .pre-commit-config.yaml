@@ -12,11 +12,5 @@ repos:
       - id: go-imports
       - id: go-cyclo
         args: [ -over=15 ]
-      - id: golangci-lint
       - id: go-build
       - id: go-mod-tidy
-
-  - repo: https://github.com/tekwizely/pre-commit-golang
-    rev: v1.0.0-beta.4
-    hooks:
-      - id: go-vet-mod
