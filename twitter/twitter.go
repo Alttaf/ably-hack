@@ -37,16 +37,16 @@ func RetrieveTweets(query string) (string, error) {
 		return "", nil
 	}
 
-	twitBearerToken := env.RetrieveValue("TWITTER_BEARER_TOKEN")
-	if twitBearerToken == "" {
-		return "", nil
+	twitBearerToken, err := env.RetrieveValue("TWITTER_BEARER_TOKEN")
+	if err != nil {
+		return "", fmt.Errorf("got error %s", err.Error())
 	}
 
-	twitPersonalisationId := env.RetrieveValue("TWITTER_PERSONALISATION_ID")
+	twitPersonalisationId, err := env.RetrieveValue("TWITTER_PERSONALISATION_ID")
 	if twitPersonalisationId == "" {
 		return "", nil
 	}
-	twitGuestId := env.RetrieveValue("TWITTER_GUEST_ID")
+	twitGuestId, err := env.RetrieveValue("TWITTER_GUEST_ID")
 	if twitGuestId == "" {
 		return "", nil
 	}

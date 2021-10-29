@@ -22,14 +22,15 @@ func Index(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 
 func Hello(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	ablyAPIKey := env.RetrieveValue("ABLY_API_KEY")
-	if ablyAPIKey == "" {
+	ablyAPIKey, err := env.RetrieveValue("ABLY_API_KEY")
+	if err != nil {
+		fmt.Fprint(w, err.Error())
 		return
 	}
 
 	ablyClient, err := ably.NewRealtime(ably.WithKey(ablyAPIKey))
 	if err != nil {
-		fmt.Println("error when attempting to create client :: " + err.Error())
+		fmt.Fprintf(w, "error when attempting to create client :: "+err.Error())
 		return
 	}
 	twitterQuery := ps.ByName("name")
@@ -43,12 +44,12 @@ func Hello(w http.ResponseWriter, _ *http.Request, ps httprouter.Params) {
 		for i := 0; i < 5; i++ {
 			data, err := twitter.RetrieveTweets(twitterQuery)
 			if err != nil {
-				fmt.Println("could not get twitter data")
+				fmt.Fprintf(w, "could not get twitter data")
 			}
 			fmt.Println(data)
 			err = channel.Publish(ctx, "test", data)
 			if err != nil {
-				fmt.Printf("there was an err %v", err)
+				fmt.Fprintf(w, "there was an err %v", err)
 			}
 			time.Sleep(20 * time.Second)
 		}

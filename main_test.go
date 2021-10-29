@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -10,6 +11,8 @@ import (
 )
 
 func TestHello(t *testing.T) {
+	os.Clearenv()
+
 	r := httptest.NewRequest("GET", "/hello/sd", bytes.NewReader([]byte{}))
 	w := httptest.NewRecorder()
 
@@ -19,11 +22,7 @@ func TestHello(t *testing.T) {
 
 	Hello(w, r, p)
 
-	if w.Code != 200 {
-		t.Errorf("wanted response code 200, got %v, body: %s", w.Code, w.Body)
-	}
-
-	wanted := `Hello Ably, name_value!`
+	wanted := `ABLY_API_KEY unset. This must be set from an .env file`
 	if strings.TrimSpace(w.Body.String()) != wanted {
 		t.Errorf(`wanted body "%v" got "%v"`, wanted, w.Body.String())
 	}
