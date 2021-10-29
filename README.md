@@ -1,5 +1,6 @@
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/alttaf/ably-hack.svg)](https://golang.org/)
 [![Report](https://goreportcard.com/badge/github.com/alttaf/ably-hack?style=flat&v=1)](https://goreportcard.com/report/github.com/alttaf/ably-hack)
+[![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://github.com/alttaf/ably-hack/blob/main/LICENSE.md)
 
 # Ably Hackathon Entry: Ably Text
 ```
