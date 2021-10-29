@@ -50,7 +50,6 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	go func() {
 		for i := 0; i < 5; i++ {
-			time.Sleep(20 * time.Second)
 			data, err := callTwitter("lakers")
 			if err != nil {
 				fmt.Println("could not get twitter data")
@@ -60,6 +59,7 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			if err != nil {
 				fmt.Printf("there was an err %v", err)
 			}
+			time.Sleep(20 * time.Second)
 		}
 	}()
 	// w.Header().Add()
