@@ -18,13 +18,25 @@ This is an [Ably GopherCon 2021 Hackathon](https://github.com/ably-labs/Gopherco
 
 Teletext was a protocol that allowed broadcasters to send text signals to televisions. This project is a similar concept, broadcasting tweet counts for a given hashtag in real time, via [Ably](https://ably.com)'s realtime API.
 
-Visit the site at <https://mighty-lake-60203.herokuapp.com> to see the data in real time. You can enter a search term to see all the recent tweets matching that keyword.
+Visit the site at <https://mighty-lake-60203.herokuapp.com> to see the data in real time.
 The default display is for the keyword "google", due to this keyword reliably matching tweets every minute! ([this search](https://twitter.com/search?q=google&src=typed_query&f=live) shows the equivalent data in Twitter).
 
 The table automatically updates in real time: a new entry will be added at the top as each new minute passes, with data from the last two hours being shown.
 
-This repo contains the backend code, see <https://github.com/Alttaf/ably-fe> for the frontend
 ![AblyTextScreenshot.png](AblyTextScreenshot.png)
+
+This repo contains the backend code, see <https://github.com/Alttaf/ably-fe> for the frontend
+
+### Dev process
+We did have a search bar where you could update the displayed tweet counts dynamically on the page:
+![searchBar.png](searchBar.png)
+This however caused us to encounter rate limits for both the Twitter and the Ably APIs! So we have reverted to the static keyword of "google" for the demo which is live.
+
+## Running locally
+1. Copy and paste `.env.example` file
+2. Rename to `.env`
+3. Fill in the specified values
+4. Run `go run ably-text`
 
 ## Future work
 This could further be expanded to:
@@ -32,11 +44,8 @@ This could further be expanded to:
   - Keep track of the sentiment of certain events
   - Monitor multiple events, see which has the highest overall positive sentiment, and most negative sentiment
 
-## Running locally
-1. Copy and paste `.env.example` file
-2. Rename to `.env`
-3. Fill in the specified values
-4. Run `go run ably-text`
+## Documentation error
+See [DOCS.md](./_docs/DOCS.md) for a documentation error 
 
 ## Contributors
 1. [Alttaf Hussain](https://github.com/alttaf)
