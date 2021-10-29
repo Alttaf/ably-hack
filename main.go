@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/ably/ably-go/ably"
-	_ "github.com/joho/godotenv/autoload"
 	"github.com/julienschmidt/httprouter"
 )
 
