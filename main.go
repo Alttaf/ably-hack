@@ -32,9 +32,14 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
-	ablyClient, err := ably.NewRealtime(ably.WithKey("J0HbFg.02ttpg:pJoo1J-jZV2Hym28kvuNKQwopg66c9bB9SIXDUhAMFw"))
+	ablyAPIKey := retrieveEnvValue("ABLY_API_KEY")
+	if ablyAPIKey == "" {
+		return
+	}
+
+	ablyClient, err := ably.NewRealtime(ably.WithKey(ablyAPIKey))
 	if err != nil {
-		fmt.Println("Dying could not create client")
+		fmt.Println("error when attempting to create client :: " + err.Error())
 		return
 	}
 	twitterQuery := ps.ByName("name")
@@ -58,11 +63,21 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 			time.Sleep(20 * time.Second)
 		}
 	}()
-	// w.Header().Add()
-
 	fmt.Fprintf(w, "Hello Ably, %s!\n", ps.ByName("name"))
 }
 
+func retrieveEnvValue(envKey string) string {
+	envValue, present := os.LookupEnv(envKey)
+	if !present {
+		errorString := fmt.Errorf("%v unset. This must be set from an .env file", envKey)
+		fmt.Println(errorString)
+		return ""
+	}
+
+	return envValue
+}
+
+// TODO: move to subpackage
 func callTwitter(query string) (string, error) {
 	client := &http.Client{
 		Timeout: time.Second * 10,
@@ -78,8 +93,24 @@ func callTwitter(query string) (string, error) {
 		return "", nil
 	}
 
-	req.Header.Add("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAABKhVAEAAAAAIDysETWcnW%2FP6b8ufmCigkDiKc0%3Dgd0OrHm53uaMPrJy289NtjHCVEUVDOMsORX92dgRRjr4TlB7Dd")
-	req.Header.Add("Cookie", "personalization_id=\"v1_R/HwN1zpTepqYV7B7JG1Ng==\"; guest_id=v1%3A163528855620592770")
+	twitBearerToken := retrieveEnvValue("TWITTER_BEARER_TOKEN")
+	if twitBearerToken == "" {
+		return "", nil
+	}
+
+	twitPersonalisationId := retrieveEnvValue("TWITTER_PERSONALISATION_ID")
+	if twitPersonalisationId == "" {
+		return "", nil
+	}
+	twitGuestId := retrieveEnvValue("TWITTER_GUEST_ID")
+	if twitGuestId == "" {
+		return "", nil
+	}
+
+	req.Header.Add("Authorization", "Bearer "+twitBearerToken)
+	cookieHeaderValue := fmt.Sprintf("personalization_id=\"%v\"; guest_id=%v", twitPersonalisationId, twitGuestId)
+
+	req.Header.Add("Cookie", cookieHeaderValue)
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -100,17 +131,20 @@ func callTwitter(query string) (string, error) {
 		log.Fatal("could not unmarshall")
 	}
 	fmt.Println("getting data from twitter")
-	// fmt.Printf("data : %v", tw.Data)
 
 	return string(body), nil
 }
 
 func main() {
-	// os.Setenv("PORT", "8080")
-	fmt.Printf("starting Server on port %s", ":"+os.Getenv("PORT"))
+	port, present := os.LookupEnv("PORT")
+	if !present {
+		port = "8080"
+	}
+
+	fmt.Printf("starting Server on port %s", ":"+port)
 
 	router := httprouter.New()
 	router.GET("/", Index)
 	router.GET("/hello/:name", Hello)
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
