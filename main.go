@@ -8,8 +8,9 @@ import (
 	"os"
 	"time"
 
-	"ably-hack.git/env"
-	"ably-hack.git/twitter"
+	"ably-text/env"
+	"ably-text/twitter"
+
 	"github.com/ably/ably-go/ably"
 	_ "github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"

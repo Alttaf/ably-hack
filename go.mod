@@ -1,4 +1,4 @@
-module ably-hack.git
+module ably-text
 
 // +heroku goVersion go1.17
 go 1.17
