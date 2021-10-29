@@ -30,5 +30,19 @@ func TestHello(t *testing.T) {
 }
 
 func TestIndex(t *testing.T) {
+	r := httptest.NewRequest("GET", "/", bytes.NewReader([]byte{}))
+	w := httptest.NewRecorder()
 
+	var p []httprouter.Param
+
+	Index(w, r, p)
+
+	if w.Code != 200 {
+		t.Errorf("wanted response code 200, got %v, body: %s", w.Code, w.Body)
+	}
+
+	wanted := `Welcome!`
+	if strings.TrimSpace(w.Body.String()) != wanted {
+		t.Errorf(`wanted body "%v" got "%v"`, wanted, w.Body.String())
+	}
 }

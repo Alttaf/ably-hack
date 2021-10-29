@@ -17,17 +17,16 @@ This is an [Ably GopherCon 2021 Hackathon](https://github.com/ably-labs/Gopherco
 
 Teletext was a protocol that allowed broadcasters to send text signals to televisions. This project is a similar concept, broadcasting tweet counts for a given hashtag in real time, via [Ably](https://ably.com)'s realtime API.
 
-Visit the site at <https://mighty-lake-60203.herokuapp.com> to see the data in real time for the keyword "google" ([this search](https://twitter.com/search?q=google&src=typed_query&f=live) shows the equivalent data in Twitter). 
-This keyword was chosen for the demo since there due to the reliability of tweets matching this keyword every minute! 
+Visit the site at <https://mighty-lake-60203.herokuapp.com> to see the data in real time. You can enter a search term to see all the recent tweets matching that keyword.
+The default display is for the keyword "google", due to this keyword reliably matching tweets every minute! ([this search](https://twitter.com/search?q=google&src=typed_query&f=live) shows the equivalent data in Twitter).
 
-The table automatically updates: a new entry will be added at the top with each new minute, with data from the last two hours being shown.
+The table automatically updates in real time: a new entry will be added at the top as each new minute passes, with data from the last two hours being shown.
 
 This repo contains the backend code, see <https://github.com/Alttaf/ably-fe> for the frontend
 ![AblyTextScreenshot.png](AblyTextScreenshot.png)
 
 ## Future work
 This could further be expanded to:
-- Have a search bar on the home page, so users could search for whichever hashtag they liked
 - Track sentiment analysis of hashtags (events) in real-time:
   - Keep track of the sentiment of certain events
   - Monitor multiple events, see which has the highest overall positive sentiment, and most negative sentiment
@@ -36,6 +35,7 @@ This could further be expanded to:
 1. Copy and paste `.env.example` file
 2. Rename to `.env`
 3. Fill in the specified values
+4. Run `go run ably-text`
 
 ## Contributors
 1. [Alttaf Hussain](https://github.com/alttaf)
