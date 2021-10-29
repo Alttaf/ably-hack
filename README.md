@@ -13,7 +13,7 @@
 ```
 
 ## About
-This is an Ably GopherCon 2021 Hackathon entry based on [Teletext](https://en.wikipedia.org/wiki/Teletext).
+This is an [Ably GopherCon 2021 Hackathon](https://github.com/ably-labs/Gophercon-Hackathon) entry based on [Teletext](https://en.wikipedia.org/wiki/Teletext).
 
 Teletext was a protocol that allowed broadcasters to send text signals to televisions. This project is a similar concept, broadcasting tweet counts for a given hashtag in real time, via [Ably](https://ably.com)'s realtime API.
 
@@ -24,10 +24,6 @@ The table automatically updates: a new entry will be added at the top with each 
 
 This repo contains the backend code, see <https://github.com/Alttaf/ably-fe> for the frontend
 ![AblyTextScreenshot.png](AblyTextScreenshot.png)
-
-### Inspiration
-
-## Documentation Fixes
 
 ## Future work
 This could further be expanded to:
