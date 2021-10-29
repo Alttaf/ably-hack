@@ -40,13 +40,13 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	channel := ablyClient.Channels.Get("test")
 
 	/* Publish a message to the test channel */
-	ctx, cancelFunction := context.WithTimeout(context.Background(), 120*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 120*time.Second)
 
 	// defer canceling so that all the resources are freed up
 	// For this and the derived contexts
 	defer func() {
-		fmt.Println("Main Defer: canceling context")
-		cancelFunction()
+		//fmt.Println("Main Defer: canceling context")
+		//cancelFunction()
 	}()
 
 	go func() {
@@ -104,12 +104,14 @@ func callTwitter(query string) (string, error) {
 	if err != nil {
 		log.Fatal("could not unmarshall")
 	}
-	// fmt.Printf("data : %v", tw.Data)
+	fmt.Println("getting data from twitter")
+	//fmt.Printf("data : %v", tw.Data)
 
 	return string(body), nil
 }
 
 func main() {
+	//os.Setenv("PORT", "8080")
 	fmt.Printf("starting Server on port %s", ":"+os.Getenv("PORT"))
 
 	router := httprouter.New()
